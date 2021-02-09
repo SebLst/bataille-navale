@@ -1,6 +1,6 @@
 package ensta.ships;
 
-abstract class AbstractShip {
+public abstract class AbstractShip {
     protected Character label;
     protected String name;
     protected int size;

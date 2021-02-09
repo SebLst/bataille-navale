@@ -1,6 +1,8 @@
 package ensta.board;
 
-public class Board {
+import ensta.ships.AbstractShip;
+
+public class Board implements IBoard {
     protected String name;
     protected int boardSize;
     protected Character[][] shipBoard;
@@ -29,7 +31,6 @@ public class Board {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 shipBoard[i][j] = '.';
-                hitBoard[i][j] = false;
             }
         }
     }
@@ -55,10 +56,9 @@ public class Board {
     }
 
     /**
-     * Shows the ship board and the hit board in the terminal
+     * Prints the ship board in the terminal
      */
-    public void print() {
-        // Printing the ship board
+    private void printShipBoard() {
         System.out.println("Ships :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
@@ -80,8 +80,12 @@ public class Board {
             System.out.println();
         }
         System.out.println();
+    }
 
-        // printing the hit board
+    /**
+     * Prints the hit board in the terminal
+     */
+    private void printHitBoard() {
         System.out.println("Hits :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
@@ -105,6 +109,15 @@ public class Board {
             }
             System.out.println();
         }
+        System.out.println();
+    }
+
+    /**
+     * Shows the ship board and the hit board in the terminal
+     */
+    public void print() {
+        printShipBoard();
+        printHitBoard();
     }
 
     /**
@@ -114,5 +127,103 @@ public class Board {
      */
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int getSize() {
+        return boardSize;
+    }
+
+    /**
+     * Tests if a ship can fit in the board
+     * 
+     * @param ship The ship tested
+     * @param x    X position, begins at 0
+     * @param y    y position, begins at 0
+     * @return
+     */
+    private boolean shipFits(AbstractShip ship, int x, int y) {
+        switch (ship.getOrientation()) {
+            case NORTH:
+                y = y - ship.getSize(); // y = 0 is the top of the board
+                break;
+
+            case SOUTH:
+                y = y + ship.getSize();
+                break;
+
+            case EAST:
+                x = x + ship.getSize();
+                break;
+
+            case WEST:
+                x = x - ship.getSize();
+                break;
+
+            default:
+                break;
+        }
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void putShip(AbstractShip ship, int x, int y) throws Exception {
+        if (!shipFits(ship, x, y)) {
+            throw new Exception(ship.getName() + " doesn't fit in the board");
+        }
+
+        shipBoard[x][y] = ship.getLabel();
+        for (int i = 0; i < ship.getSize() - 1; i++) {
+            switch (ship.getOrientation()) {
+                case NORTH:
+                    y--; // y = 0 is the top of the board
+                    break;
+
+                case SOUTH:
+                    y++;
+                    break;
+
+                case EAST:
+                    x++;
+                    break;
+
+                case WEST:
+                    x--;
+                    break;
+
+                default:
+                    break;
+            }
+            shipBoard[x][y] = ship.getLabel();
+        }
+
+    }
+
+    @Override
+    public boolean hasShip(int x, int y) {
+        // TODO error handling
+        if (shipBoard[x][y] == '.') {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void setHit(boolean hit, int x, int y) {
+        // TODO error handling
+        if (hasShip(x, y) || hit) {
+            hitBoard[x][y] = true;
+        } else {
+            hitBoard[x][y] = false;
+        }
+    }
+
+    @Override
+    public Boolean getHit(int x, int y) {
+        // TODO error handling
+        return hitBoard[x][y];
     }
 }
