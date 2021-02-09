@@ -1,4 +1,4 @@
-package ensta;
+package ensta.board;
 
 public class Board {
     protected String name;
@@ -107,4 +107,12 @@ public class Board {
         }
     }
 
+    /**
+     * Board name getter
+     * 
+     * @return Name of the board
+     */
+    public String getName() {
+        return name;
+    }
 }

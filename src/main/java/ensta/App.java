@@ -1,5 +1,8 @@
 package ensta;
 
+import ensta.board.*;
+import ensta.ships.*;
+
 /**
  * Hello world!
  *
