@@ -13,6 +13,12 @@ public abstract class AbstractShip {
         this.orientation = orientation;
     }
 
+    public AbstractShip(Character label, String name, int size) {
+        this.label = label;
+        this.name = name;
+        this.size = size;
+    }
+
     /**
      * Label getter
      * 

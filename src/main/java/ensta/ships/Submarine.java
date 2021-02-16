@@ -6,4 +6,8 @@ public class Submarine extends AbstractShip {
         super('S', "Submarine", 3, orientation);
     }
 
+    public Submarine() {
+        super('S', "Submarine", 3);
+    }
+
 }

@@ -6,4 +6,8 @@ public class AircraftCarrier extends AbstractShip {
         super('C', "Aircraft Carrier", 5, orientation);
     }
 
+    public AircraftCarrier() {
+        super('C', "Aircraft Carrier", 5);
+    }
+
 }

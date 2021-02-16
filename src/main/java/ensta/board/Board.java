@@ -58,7 +58,7 @@ public class Board implements IBoard {
     /**
      * Prints the ship board in the terminal
      */
-    private void printShipBoard() {
+    public void printShipBoard() {
         System.out.println("Ships :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
@@ -85,7 +85,7 @@ public class Board implements IBoard {
     /**
      * Prints the hit board in the terminal
      */
-    private void printHitBoard() {
+    public void printHitBoard() {
         System.out.println("Hits :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
@@ -140,28 +140,33 @@ public class Board implements IBoard {
      * @param ship The ship tested
      * @param x    X position, begins at 0
      * @param y    y position, begins at 0
-     * @return
+     * @return false is the ship doesn't fit, true if it fits
      */
     private boolean shipFits(AbstractShip ship, int x, int y) {
-        switch (ship.getOrientation()) {
-            case NORTH:
-                y = y - ship.getSize(); // y = 0 is the top of the board
-                break;
+        for (int i = 0; i < ship.getSize(); i++) {
+            if (hasShip(x, y)) {
+                return false;
+            }
+            switch (ship.getOrientation()) {
+                case NORTH:
+                    y--; // y = 0 is the top of the board
+                    break;
 
-            case SOUTH:
-                y = y + ship.getSize();
-                break;
+                case SOUTH:
+                    y++;
+                    break;
 
-            case EAST:
-                x = x + ship.getSize();
-                break;
+                case EAST:
+                    x++;
+                    break;
 
-            case WEST:
-                x = x - ship.getSize();
-                break;
+                case WEST:
+                    x--;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
         if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
             return false;

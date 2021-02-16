@@ -6,4 +6,8 @@ public class BattleShip extends AbstractShip {
         super('B', "BattleShip", 4, orientation);
     }
 
+    public BattleShip() {
+        super('B', "BattleShip", 4);
+    }
+
 }
