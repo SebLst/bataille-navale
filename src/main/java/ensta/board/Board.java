@@ -1,6 +1,7 @@
 package ensta.board;
 
 import ensta.ships.AbstractShip;
+import ensta.ships.Orientation;
 import ensta.ships.ShipState;
 import ensta.colorui.*;
 import ensta.colorui.ColorUtil.Color;
@@ -152,35 +153,41 @@ public class Board implements IBoard {
      * @return false is the ship doesn't fit, true if it fits
      */
     private boolean shipFits(AbstractShip ship, int x, int y) {
-        for (int i = 0; i < ship.getSize(); i++) {
-            if (hasShip(x, y)) {
+        Orientation o = ship.getOrientation();
+        int dx = 0, dy = 0;
+        if (o == Orientation.EAST) {
+            if (x + ship.getSize() >= boardSize) {
                 return false;
             }
-            switch (ship.getOrientation()) {
-                case NORTH:
-                    y--; // y = 0 is the top of the board
-                    break;
-
-                case SOUTH:
-                    y++;
-                    break;
-
-                case EAST:
-                    x++;
-                    break;
-
-                case WEST:
-                    x--;
-                    break;
-
-                default:
-                    break;
+            dx = 1;
+        } else if (o == Orientation.SOUTH) {
+            if (y + ship.getSize() >= boardSize) {
+                return false;
             }
+            dy = 1;
+        } else if (o == Orientation.NORTH) {
+            if (y + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dy = -1;
+        } else if (o == Orientation.WEST) {
+            if (x + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dx = -1;
         }
-        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
-            System.out.println("Ship doesn't fit");
-            return false;
+
+        int ix = x;
+        int iy = y;
+
+        for (int i = 0; i < ship.getSize(); ++i) {
+            if (hasShip(ix, iy)) {
+                return false;
+            }
+            ix += dx;
+            iy += dy;
         }
+
         return true;
     }
 
