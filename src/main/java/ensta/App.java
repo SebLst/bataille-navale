@@ -32,16 +32,30 @@ public class App {
         // MyBoard.setHit(false, 2, 2);
         // MyBoard.print();
 
-        Board playerBoard = new Board("Player Board", 15);
-        Board opponentBoard = new Board("Opponent Board", 15);
-        List<AbstractShip> ships = new ArrayList<AbstractShip>();
-        ships.add(new Destroyer());
-        ships.add(new Submarine());
-        ships.add(new Submarine());
-        ships.add(new BattleShip());
-        ships.add(new AircraftCarrier());
+        // Board playerBoard = new Board("Player Board", 15);
+        // Board opponentBoard = new Board("Opponent Board", 15);
+        // playerBoard.print();
 
-        Player player = new Player(playerBoard, opponentBoard, ships);
-        player.putShips();
+        // List<AbstractShip> ships = new ArrayList<AbstractShip>();
+        // ships.add(new Destroyer());
+        // ships.add(new Submarine());
+        // ships.add(new Submarine());
+        // ships.add(new BattleShip());
+        // ships.add(new AircraftCarrier());
+
+        // Player player = new Player(playerBoard, opponentBoard, ships);
+        // player.putShips();
+
+        // playerBoard.setHit(true, 0, 1);
+        // playerBoard.print();
+
+        // ShipState mDestroyerState = new ShipState(new Destroyer());
+        // System.out.println(mDestroyerState.toString());
+        // mDestroyerState.addStrike();
+        // System.out.println(mDestroyerState.toString());
+        // mDestroyerState.addStrike();
+        // if (mDestroyerState.isStruck()) {
+        // System.out.println(mDestroyerState.toString());
+        // }
     }
 }

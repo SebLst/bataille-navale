@@ -40,6 +40,7 @@ public class Player {
 
         do {
             AbstractShip s = ships[i];
+            ShipState state = new ShipState(s);
             String msg = String.format("placement %d : %s(%d)", i + 1, s.getName(), s.getSize());
             System.out.println(msg);
             InputHelper.ShipInput res = InputHelper.readShipInput();
@@ -66,7 +67,7 @@ public class Player {
             }
 
             try {
-                board.putShip(s, res.x, res.y);
+                board.putShip(state, res.x, res.y);
             } catch (Exception e) {
                 i--; // if the ship cannot be placed, we will ask the player to put it again
             }

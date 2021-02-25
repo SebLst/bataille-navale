@@ -1,12 +1,15 @@
 package ensta.board;
 
 import ensta.ships.AbstractShip;
+import ensta.ships.ShipState;
+import ensta.colorui.*;
+import ensta.colorui.ColorUtil.Color;
 
 public class Board implements IBoard {
     protected String name;
     protected int boardSize;
-    protected Character[][] shipBoard;
-    protected boolean[][] hitBoard;
+    protected ShipState[][] shipBoard;
+    protected Boolean[][] hitBoard;
 
     /**
      * 
@@ -25,12 +28,12 @@ public class Board implements IBoard {
         }
 
         this.boardSize = boardSize;
-        this.shipBoard = new Character[boardSize][boardSize];
-        this.hitBoard = new boolean[boardSize][boardSize];
+        this.shipBoard = new ShipState[boardSize][boardSize];
+        this.hitBoard = new Boolean[boardSize][boardSize];
 
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                shipBoard[i][j] = '.';
+                shipBoard[i][j] = null;
             }
         }
     }
@@ -73,7 +76,11 @@ public class Board implements IBoard {
                     System.out.print(j);
                     space(boardSize / 10 + 1 - j / 10);
                 } else { // the board itself
-                    System.out.print(shipBoard[i - 1][j - 1]);
+                    if (shipBoard[i - 1][j - 1] == null) {
+                        System.out.print(".");
+                    } else {
+                        System.out.print(shipBoard[i - 1][j - 1].toString());
+                    }
                     space(1);
                 }
             }
@@ -99,10 +106,12 @@ public class Board implements IBoard {
                     System.out.print(j);
                     space(boardSize / 10 + 1 - j / 10);
                 } else {
-                    if (hitBoard[i - 1][j - 1]) {
-                        System.out.print("X"); // hit
-                    } else {
-                        System.out.print("."); // miss
+                    if (hitBoard[i - 1][j - 1] == null) {
+                        System.out.print(".");
+                    } else if (hitBoard[i - 1][j - 1]) {
+                        System.out.print(ColorUtil.colorize("X", Color.RED)); // hit
+                    } else if (!hitBoard[i - 1][j - 1]) {
+                        System.out.print(ColorUtil.colorize("X", Color.WHITE)); // miss
                     }
                     space(1);
                 }
@@ -169,20 +178,21 @@ public class Board implements IBoard {
             }
         }
         if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
+            System.out.println("Ship doesn't fit");
             return false;
         }
         return true;
     }
 
     @Override
-    public void putShip(AbstractShip ship, int x, int y) throws Exception {
-        if (!shipFits(ship, x, y)) {
-            throw new Exception(ship.getName() + " doesn't fit in the board");
+    public void putShip(ShipState ship, int x, int y) throws Exception {
+        if (!shipFits(ship.getShip(), x, y)) {
+            throw new Exception(ship.getShip().getName() + " doesn't fit in the board");
         }
 
-        shipBoard[x][y] = ship.getLabel();
-        for (int i = 0; i < ship.getSize() - 1; i++) {
-            switch (ship.getOrientation()) {
+        shipBoard[x][y] = ship;
+        for (int i = 0; i < ship.getShip().getSize() - 1; i++) {
+            switch (ship.getShip().getOrientation()) {
                 case NORTH:
                     y--; // y = 0 is the top of the board
                     break;
@@ -202,7 +212,7 @@ public class Board implements IBoard {
                 default:
                     break;
             }
-            shipBoard[x][y] = ship.getLabel();
+            shipBoard[x][y] = ship;
         }
 
     }
@@ -210,7 +220,7 @@ public class Board implements IBoard {
     @Override
     public boolean hasShip(int x, int y) {
         // TODO error handling
-        if (shipBoard[x][y] == '.') {
+        if (shipBoard[x][y] == null) {
             return false;
         }
         return true;

@@ -18,7 +18,7 @@ public interface IBoard {
      * @param x    Begins at 0!
      * @param y    Begins at 0!
      */
-    void putShip(AbstractShip ship, int x, int y) throws Exception;
+    void putShip(ShipState ship, int x, int y) throws Exception;
 
     /**
      * Get if a ship is placed at the given position

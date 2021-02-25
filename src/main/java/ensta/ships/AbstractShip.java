@@ -5,6 +5,7 @@ public abstract class AbstractShip {
     protected String name;
     protected int size;
     protected Orientation orientation;
+    protected int strikeCount = 0;
 
     public AbstractShip(Character label, String name, int size, Orientation orientation) {
         this.label = label;
@@ -62,5 +63,26 @@ public abstract class AbstractShip {
      */
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
+    }
+
+    /**
+     * Increments the number of times the ships was struck
+     */
+    public void addStrike() {
+        if (strikeCount != size) {
+            strikeCount++;
+        }
+    }
+
+    /**
+     * Evaluates if the ships sunk
+     * 
+     * @return State of the ship
+     */
+    public boolean isSunk() {
+        if (strikeCount == size) {
+            return true;
+        }
+        return false;
     }
 }
