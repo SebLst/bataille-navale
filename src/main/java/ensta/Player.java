@@ -78,18 +78,18 @@ public class Player {
         } while (!done);
     }
 
-    /*
-     * public Hit sendHit(int[] coords) { boolean done; Hit hit = null;
-     * 
-     * do { System.out.println("où frapper?"); InputHelper.CoordInput hitInput =
-     * InputHelper.readCoordInput(); // TODO call sendHit on this.opponentBoard
-     * 
-     * // TODO : Game expects sendHit to return BOTH hit result & hit coords. //
-     * return hit is obvious. But how to return coords at the same time ? } while
-     * (!done);
-     * 
-     * return hit; }
-     */
+    public Hit sendHit(int[] coords) {
+        Hit hit = null;
+        do {
+            System.out.println("où frapper?");
+            InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
+            opponentBoard.sendHit(hitInput.x, hitInput.y);
+        } while (hit == null);
+
+        // TODO : Game expects sendHit to return BOTH hit result & hit coords.
+        // return hit is obvious. But how to return coords at the same time ?
+        return hit;
+    }
 
     public AbstractShip[] getShips() {
         return ships;

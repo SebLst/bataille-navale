@@ -241,4 +241,27 @@ public class Board implements IBoard {
         // TODO error handling
         return hitBoard[x][y];
     }
+
+    @Override
+    public Hit sendHit(int x, int y) {
+        // TODO maybe better
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
+            System.out.println("Tir illégal.");
+            return null;
+        }
+
+        if (hasShip(x, y)) { // if it hits
+            hitBoard[x][y] = true;
+            shipBoard[x][y].addStrike();
+            if (shipBoard[x][y].isSunk()) {
+                Hit hit = Hit.fromInt(shipBoard[x][y].getShip().getSize());
+                System.out.println(hit.toString() + " coulé(e) !");
+                return hit;
+            }
+            return Hit.STRIKE;
+        }
+        // else
+        hitBoard[x][y] = false;
+        return Hit.MISS;
+    }
 }

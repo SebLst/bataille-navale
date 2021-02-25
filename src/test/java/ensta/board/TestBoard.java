@@ -25,10 +25,49 @@ public class TestBoard {
         assertEquals(15, testBoard.boardSize);
     }
 
-    // @Test(expected = Exception.class)
-    // public void putShipTest() {
-    // Board testBoard = new Board("Test Board", 15);
-    // Submarine mySubmarine = new Submarine(Orientation.NORTH);
-    // testBoard.putShip(mySubmarine, 5, 5);
-    // }
+    @Test
+    public void sendHitStrikeTest() {
+        Board testBoard = new Board("Test Board", 15);
+        AbstractShip destroyer = new Destroyer();
+        destroyer.setOrientation(Orientation.EAST);
+        ShipState ship = new ShipState(destroyer);
+        try {
+            testBoard.putShip(ship, 2, 2);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        Hit hit = testBoard.sendHit(2, 2);
+        assertEquals(Hit.STRIKE, hit);
+    }
+
+    @Test
+    public void sendHitMissTest() {
+        Board testBoard = new Board("Test Board", 15);
+        AbstractShip destroyer = new Destroyer();
+        destroyer.setOrientation(Orientation.EAST);
+        ShipState ship = new ShipState(destroyer);
+        try {
+            testBoard.putShip(ship, 2, 2);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        Hit hit = testBoard.sendHit(3, 3);
+        assertEquals(Hit.MISS, hit);
+    }
+
+    @Test
+    public void sendHitSinkTest() {
+        Board testBoard = new Board("Test Board", 15);
+        AbstractShip destroyer = new Destroyer();
+        destroyer.setOrientation(Orientation.EAST);
+        ShipState ship = new ShipState(destroyer);
+        try {
+            testBoard.putShip(ship, 2, 2);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        testBoard.sendHit(2, 2);
+        Hit hit = testBoard.sendHit(3, 2);
+        assertEquals(Hit.DESTROYER, hit);
+    }
 }

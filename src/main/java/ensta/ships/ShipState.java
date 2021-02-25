@@ -35,7 +35,7 @@ public class ShipState {
     }
 
     /**
-     * Returns the ship's label (in red if stricken)
+     * Returns the ship's label (in red if struck)
      */
     public String toString() {
         if (struck) {
@@ -43,6 +43,15 @@ public class ShipState {
         } else {
             return ship.getLabel().toString();
         }
+    }
+
+    /**
+     * Returns the ship's label (always in white)
+     * 
+     * @return Ship's label
+     */
+    public String getLabel() {
+        return ColorUtil.colorize(ship.getLabel(), Color.WHITE);
     }
 
     /**

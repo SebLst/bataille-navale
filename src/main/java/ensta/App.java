@@ -34,7 +34,6 @@ public class App {
 
         // Board playerBoard = new Board("Player Board", 15);
         // Board opponentBoard = new Board("Opponent Board", 15);
-        // playerBoard.print();
 
         // List<AbstractShip> ships = new ArrayList<AbstractShip>();
         // ships.add(new Destroyer());
