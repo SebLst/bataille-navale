@@ -63,7 +63,7 @@ public class Board implements IBoard {
      * Prints the ship board in the terminal
      */
     public void printShipBoard() {
-        System.out.println("Ships :");
+        System.out.println(name + "'s ships :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
 
@@ -94,7 +94,7 @@ public class Board implements IBoard {
      * Prints the hit board in the terminal
      */
     public void printHitBoard() {
-        System.out.println("Hits :");
+        System.out.println(name + "'s hit board :");
         for (int j = 0; j < boardSize + 1; j++) {
             for (int i = 0; i < boardSize + 1; i++) {
 
@@ -235,12 +235,7 @@ public class Board implements IBoard {
 
     @Override
     public void setHit(boolean hit, int x, int y) {
-        // TODO error handling
-        if (hasShip(x, y) || hit) {
-            hitBoard[x][y] = true;
-        } else {
-            hitBoard[x][y] = false;
-        }
+        hitBoard[x][y] = hit;
     }
 
     @Override
