@@ -62,6 +62,45 @@ public class Game {
         return this;
     }
 
+    public Game initMulti() {
+        // init attributes
+        sin = new Scanner(System.in);
+        System.out.println("Nom du premier joueur:");
+        String userName1 = sin.nextLine(); // read user name
+        System.out.println("Nom du deuxième joueur:");
+        String userName2 = sin.nextLine(); // read user name
+
+        // board init
+        System.out.println("Entre la taille du plateau (min 10, max 26)");
+        int boardSize = sin.nextInt();
+        if (boardSize < 10) {
+            boardSize = 10;
+        } else if (boardSize > 26) {
+            boardSize = 26;
+        }
+        Board b1, b2;
+        b1 = new Board(userName1, boardSize);
+        b2 = new Board(userName2, boardSize);
+
+        // players init
+        List<AbstractShip> player1Ships = createDefaultShips();
+        List<AbstractShip> player2Ships = createDefaultShips();
+
+        this.player1 = new Player(b1, b2, player1Ships);
+        this.player2 = new Player(b2, b1, player2Ships);
+
+        // place ships
+        System.out.println("A " + userName1 + " de placer ses bateaux");
+        b1.print();
+        player1.putShips();
+
+        System.out.println("A " + userName2 + " de placer ses bateaux");
+        b2.print();
+        player2.putShips();
+
+        return this;
+    }
+
     /*
      * *** Méthodes
      */
@@ -85,6 +124,39 @@ public class Game {
             if (!done) {
                 hit = player2.sendHit(coords);
                 b1.print();
+                System.out.println(makeHitMessage(true /* incoming hit */, coords, hit));
+                done = updateScore();
+            }
+
+        } while (!done);
+
+        SAVE_FILE.delete();
+        System.out.println(String.format("joueur %d gagne", player1.lose ? 2 : 1));
+        sin.close();
+    }
+
+    public void runMulti() {
+        int[] coords = new int[2];
+        Board b1 = player1.board;
+        Board b2 = player2.board;
+        Hit hit;
+
+        // main loop
+        boolean done = false;
+        do {
+            if (!done) {
+                System.out.println("C'est au joueur 1 de tirer !");
+                b1.print();
+                hit = player1.sendHit(coords);
+                b1.print();
+                System.out.println(makeHitMessage(false /* outgoing hit */, coords, hit));
+                done = updateScore();
+            }
+
+            if (!done) {
+                System.out.println("C'est au joueur 2 de tirer !");
+                b2.print();
+                hit = player2.sendHit(coords);
                 b2.print();
                 System.out.println(makeHitMessage(true /* incoming hit */, coords, hit));
                 done = updateScore();
