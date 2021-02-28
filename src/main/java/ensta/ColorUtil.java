@@ -1,4 +1,4 @@
-package ensta.colorui;
+package ensta;
 
 public class ColorUtil {
 

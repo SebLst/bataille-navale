@@ -1,65 +1,55 @@
 package ensta.ships;
 
-import ensta.colorui.*;
-import ensta.colorui.ColorUtil.Color;
+import ensta.ColorUtil;
+import ensta.ColorUtil.Color;
 
 public class ShipState {
-    AbstractShip ship;
-    boolean struck = false;
 
+    protected AbstractShip ship;
+    private boolean struck = false;
+
+    /**
+     * Parameterized constructor.
+     * 
+     * @param ship Reference ship for the state
+     */
     public ShipState(AbstractShip ship) {
         this.ship = ship;
     }
 
+    /**
+     * Marks the ship has damaged
+     */
     public void addStrike() {
-        struck = true;
-        ship.addStrike();
+        if (!struck) { // the ship cannot take multiple damage from the same place
+            ship.addStrike();
+            struck = true;
+        }
     }
 
     /**
      * Returns the state of the ship
      * 
-     * @return true if the ship received at least one hit
+     * @return True if the ship is struck
      */
     public boolean isStruck() {
         return struck;
     }
 
     /**
-     * Returns the state of the ship
+     * Ship getter
      * 
-     * @return true if the ship is destroyed
+     * @return Ship concerned by the state
      */
-    public boolean isSunk() {
-        return ship.isSunk();
+    public AbstractShip getShip() {
+        return ship;
     }
 
-    /**
-     * Returns the ship's label (in red if struck)
-     */
     public String toString() {
         if (struck) {
             return ColorUtil.colorize(ship.getLabel(), Color.RED);
         } else {
-            return ship.getLabel().toString();
+            return ColorUtil.colorize(ship.getLabel(), Color.WHITE);
         }
-    }
-
-    /**
-     * Returns the ship's label (always in white)
-     * 
-     * @return Ship's label
-     */
-    public String getLabel() {
-        return ColorUtil.colorize(ship.getLabel(), Color.WHITE);
-    }
-
-    /**
-     * Ship getter
-     * 
-     * @return Ship associated with the state
-     */
-    public AbstractShip getShip() {
-        return ship;
     }
 }

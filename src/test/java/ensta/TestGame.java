@@ -1,51 +1,51 @@
 package ensta;
 
-import java.util.*;
 import org.junit.Test;
 
 import ensta.ships.*;
-import ensta.board.*;
 
 public class TestGame {
 
+    /**
+     * Pauses the execution
+     * 
+     * @param ms Pause time in ms
+     */
+    private static void sleep(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
-    public void gameTest() {
-        int boardSize = 10;
-        Board board = new Board("Player Board", boardSize);
+    public void aiGameTest() {
+        Board board = new Board("Player Board");
         board.print();
 
-        List<AbstractShip> ships = new ArrayList<AbstractShip>();
-        ships.add(new Destroyer());
-        ships.add(new Submarine());
-        ships.add(new Submarine());
-        ships.add(new BattleShip());
-        ships.add(new AircraftCarrier());
+        AbstractShip[] ships = { new Destroyer(), new Submarine(), new Submarine(), new Battleship(), new Carrier() };
 
         BattleShipsAI ai = new BattleShipsAI(board, board);
-        int destroyedShipsByAI = 0;
         ai.putShips(ships);
-        Hit hit = null;
+        int shipsDestroyed = 0;
+        int[] coords = { 0, 0 };
+        Hit hit;
 
-        while (destroyedShipsByAI != 5) {
-            Random rnd = new Random();
-            int[] coords = new int[2];
-            coords[0] = rnd.nextInt(boardSize);
-            coords[1] = rnd.nextInt(boardSize);
+        while (shipsDestroyed != ships.length) {
             hit = ai.sendHit(coords);
-            System.out.println("Tir en " + Integer.toString(coords[0]) + " ," + Integer.toString(coords[0])
-                    + " résultats : " + hit.toString());
-            if (hit == Hit.DESTROYER || hit == Hit.SUBMARINE || hit == Hit.BATTLESHIP || hit == Hit.CARRIER) {
-                destroyedShipsByAI++;
-                System.out.println("Nombre de bateaux détruits :" + Integer.toString(destroyedShipsByAI));
+            System.out
+                    .println("Strike at : " + Integer.toString(coords[0] + 1) + ", " + Integer.toString(coords[1] + 1));
+            if (hit != Hit.MISS && hit != Hit.STRIKE) {
+                System.out.println(hit.toString() + " coulé");
+                shipsDestroyed++;
+            } else {
+                System.out.println(hit.toString());
             }
+
             board.print();
-            // try {
-            // Thread.sleep(500);
-            // } catch (InterruptedException e) {
-            // e.printStackTrace();
-            // }
+            // sleep(500);
         }
 
     }
-
 }

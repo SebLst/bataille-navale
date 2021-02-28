@@ -1,14 +1,12 @@
 package ensta;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import ensta.board.*;
 import ensta.ships.*;
-import ensta.colorui.*;
 
 public class Game {
 
@@ -21,7 +19,7 @@ public class Game {
      * *** Attributs
      */
     private Player player1;
-    private AIPlayer player2;
+    private Player player2;
     private Scanner sin;
 
     /*
@@ -34,25 +32,27 @@ public class Game {
         // if (!loadSave()) {
         // init attributes
         sin = new Scanner(System.in);
-        System.out.println("entre ton nom:");
+        System.out.println("Entre ton nom:");
         String userName = sin.nextLine(); // read user name
 
+        // board init
         System.out.println("Entre la taille du plateau (min 10, max 26)");
         int boardSize = sin.nextInt();
-
+        if (boardSize < 10) {
+            boardSize = 10;
+        } else if (boardSize > 26) {
+            boardSize = 26;
+        }
         Board b1, b2;
         b1 = new Board(userName, boardSize);
-        b2 = new Board("AI", boardSize);
+        b2 = new Board("Adversaire", boardSize);
 
-        List<AbstractShip> ships = new ArrayList<AbstractShip>();
-        ships.add(new Destroyer());
-        ships.add(new Submarine());
-        ships.add(new Submarine());
-        ships.add(new BattleShip());
-        ships.add(new AircraftCarrier());
+        // players init
+        List<AbstractShip> player1Ships = createDefaultShips();
+        List<AbstractShip> player2Ships = createDefaultShips();
 
-        this.player1 = new Player(b1, b2, ships);
-        this.player2 = new AIPlayer(b2, b1, ships);
+        this.player1 = new Player(b1, b2, player1Ships);
+        this.player2 = new AIPlayer(b2, b1, player2Ships);
 
         b1.print();
         // place player ships
@@ -73,35 +73,21 @@ public class Game {
 
         // main loop
         b1.print();
-        b2.print();
-        boolean done;
+        boolean done = false;
         do {
-            hit = player1.sendHit(coords); // player1 send a hit
-            boolean strike = hit != Hit.MISS;
-            player1.board.setHit(strike, coords[0], coords[1]);
-
-            done = updateScore();
-            b1.print();
-            b2.print();
-            System.out.println(makeHitMessage(false /* outgoing hit */, coords, hit));
-
-            // save();
+            if (!done) {
+                hit = player1.sendHit(coords);
+                b1.print();
+                System.out.println(makeHitMessage(false /* outgoing hit */, coords, hit));
+                done = updateScore();
+            }
 
             if (!done) {
-                hit = player2.sendHit(coords);// player2 send a hit.
-                strike = hit != Hit.MISS;
-                player2.board.setHit(strike, coords[0], coords[1]);
-
-                strike = hit != Hit.MISS;
-                if (strike) {
-                    b1.print();
-                }
+                hit = player2.sendHit(coords);
+                b1.print();
+                b2.print();
                 System.out.println(makeHitMessage(true /* incoming hit */, coords, hit));
                 done = updateScore();
-
-                // if (!done) {
-                // save();
-                // }
             }
 
         } while (!done);
@@ -177,8 +163,8 @@ public class Game {
     }
 
     private static List<AbstractShip> createDefaultShips() {
-        return Arrays.asList(new AbstractShip[] { new Destroyer(), new Submarine(), new Submarine(), new BattleShip(),
-                new AircraftCarrier() });
+        return Arrays.asList(new AbstractShip[] { new Destroyer(), new Submarine(), new Submarine(), new Battleship(),
+                new Carrier() });
     }
 
     public static void main(String args[]) {

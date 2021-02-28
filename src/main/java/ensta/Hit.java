@@ -1,4 +1,4 @@
-package ensta.board;
+package ensta;
 
 import java.util.NoSuchElementException;
 

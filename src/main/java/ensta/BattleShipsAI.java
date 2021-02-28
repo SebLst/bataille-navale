@@ -1,4 +1,4 @@
-package ensta.board;
+package ensta;
 
 import java.io.Serializable;
 import java.util.*;
@@ -62,10 +62,10 @@ public class BattleShipsAI implements Serializable {
      * 
      * @param ships the ships to put
      */
-    public void putShips(List<AbstractShip> ships) {
+    public void putShips(AbstractShip ships[]) {
         int x, y;
         Random rnd = new Random();
-        Orientation[] orientations = Orientation.values();
+        AbstractShip.Orientation[] orientations = AbstractShip.Orientation.values();
 
         for (AbstractShip s : ships) {
             do {
@@ -73,12 +73,7 @@ public class BattleShipsAI implements Serializable {
                 y = rnd.nextInt(board.getSize());
                 s.setOrientation(orientations[rnd.nextInt(orientations.length)]);
             } while (!canPutShip(s, x, y));
-            ShipState state = new ShipState(s);
-            try {
-                board.putShip(state, x, y);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
+            board.putShip(s, x, y);
         }
     }
 
@@ -143,25 +138,25 @@ public class BattleShipsAI implements Serializable {
      */
 
     private boolean canPutShip(AbstractShip ship, int x, int y) {
-        Orientation o = ship.getOrientation();
+        AbstractShip.Orientation o = ship.getOrientation();
         int dx = 0, dy = 0;
-        if (o == Orientation.EAST) {
-            if (x + ship.getSize() >= this.size) {
+        if (o == AbstractShip.Orientation.EAST) {
+            if (x + ship.getLength() >= this.size) {
                 return false;
             }
             dx = 1;
-        } else if (o == Orientation.SOUTH) {
-            if (y + ship.getSize() >= this.size) {
+        } else if (o == AbstractShip.Orientation.SOUTH) {
+            if (y + ship.getLength() >= this.size) {
                 return false;
             }
             dy = 1;
-        } else if (o == Orientation.NORTH) {
-            if (y + 1 - ship.getSize() < 0) {
+        } else if (o == AbstractShip.Orientation.NORTH) {
+            if (y + 1 - ship.getLength() < 0) {
                 return false;
             }
             dy = -1;
-        } else if (o == Orientation.WEST) {
-            if (x + 1 - ship.getSize() < 0) {
+        } else if (o == AbstractShip.Orientation.WEST) {
+            if (x + 1 - ship.getLength() < 0) {
                 return false;
             }
             dx = -1;
@@ -170,7 +165,7 @@ public class BattleShipsAI implements Serializable {
         int ix = x;
         int iy = y;
 
-        for (int i = 0; i < ship.getSize(); ++i) {
+        for (int i = 0; i < ship.getLength(); ++i) {
             if (board.hasShip(ix, iy)) {
                 return false;
             }

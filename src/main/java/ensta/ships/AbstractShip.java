@@ -1,27 +1,35 @@
 package ensta.ships;
 
 public abstract class AbstractShip {
-    protected Character label;
-    protected String name;
-    protected int size;
-    protected Orientation orientation;
-    protected int strikeCount = 0;
 
-    public AbstractShip(Character label, String name, int size, Orientation orientation) {
-        this.label = label;
-        this.name = name;
-        this.size = size;
-        this.orientation = orientation;
+    public enum Orientation {
+        NORTH, SOUTH, EAST, WEST
     }
 
-    public AbstractShip(Character label, String name, int size) {
+    protected final Character label; // isn't supposed to change
+    protected final String name; // same here
+    protected final int length;
+    protected Orientation orientation;
+    protected int strikeCount; // number of strikes taken
+
+    /**
+     * AbstractShip constructor
+     * 
+     * @param label       Ship's label
+     * @param name        Ship's name
+     * @param length      Ship's length
+     * @param orientation Ship's orientation
+     */
+    protected AbstractShip(Character label, String name, int length, Orientation orientation) {
         this.label = label;
         this.name = name;
-        this.size = size;
+        this.length = length;
+        this.orientation = orientation;
+        this.strikeCount = 0;
     }
 
     /**
-     * Label getter
+     * Ship's label getter
      * 
      * @return Ship's label
      */
@@ -30,21 +38,21 @@ public abstract class AbstractShip {
     }
 
     /**
-     * Name getter
+     * Ship's name getter
      * 
-     * @return Ship's full name
+     * @return Ship's name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Ship size getter
+     * Ship's length getter
      * 
-     * @return Ship's size, between 2 and 5
+     * @return Ship's length
      */
-    public int getSize() {
-        return size;
+    public int getLength() {
+        return length;
     }
 
     /**
@@ -59,30 +67,25 @@ public abstract class AbstractShip {
     /**
      * Ship's orientation setter
      * 
-     * @param orientation NORTH, SOUTH, EAST or WEST
+     * @param orientation Ship's orientation
      */
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
     }
 
     /**
-     * Increments the number of times the ships was struck
+     * Increments the number of strikes taken by the ship
      */
     public void addStrike() {
-        if (strikeCount != size) {
-            strikeCount++;
-        }
+        strikeCount++;
     }
 
     /**
-     * Evaluates if the ships sunk
+     * Checks if the ship is sunk
      * 
-     * @return State of the ship
+     * @return State of the ship (true = sunk)
      */
     public boolean isSunk() {
-        if (strikeCount == size) {
-            return true;
-        }
-        return false;
+        return strikeCount == length;
     }
 }

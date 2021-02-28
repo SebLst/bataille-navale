@@ -1,11 +1,10 @@
 package ensta;
 
-import ensta.board.*;
-import ensta.ships.*;
-import ensta.input.*;
-
 import java.io.Serializable;
 import java.util.List;
+
+import ensta.ships.*;
+import ensta.ships.AbstractShip.Orientation;
 
 public class Player {
     /*
@@ -40,57 +39,76 @@ public class Player {
 
         do {
             AbstractShip s = ships[i];
-            ShipState state = new ShipState(s);
-            String msg = String.format("placement %d : %s(%d)", i + 1, s.getName(), s.getSize());
+            String msg = String.format("placer %d : %s(%d)", i + 1, s.getName(), s.getLength());
             System.out.println(msg);
             InputHelper.ShipInput res = InputHelper.readShipInput();
-
+            Orientation orientation = Orientation.EAST;
             switch (res.orientation) {
                 case "n":
-                    s.setOrientation(Orientation.NORTH);
-                    break;
-
-                case "s":
-                    s.setOrientation(Orientation.SOUTH);
+                    orientation = Orientation.NORTH;
                     break;
 
                 case "e":
-                    s.setOrientation(Orientation.EAST);
+                    orientation = Orientation.EAST;
+                    break;
+
+                case "s":
+                    orientation = Orientation.SOUTH;
                     break;
 
                 case "w":
-                    s.setOrientation(Orientation.WEST);
+                    orientation = Orientation.WEST;
                     break;
 
                 default:
                     break;
             }
+            s.setOrientation(orientation);
 
-            try {
-                board.putShip(state, res.x, res.y);
-            } catch (Exception e) {
-                i--; // if the ship cannot be placed, we will ask the player to put it again
+            // if the ship fits the board
+            if (board.isFree(s, res.x, res.y)) {
+                board.putShip(s, res.x, res.y); // put it
+            } else {
+                i--; // else we try again
             }
-            ++i;
-            done = i == 5;
 
-            board.printShipBoard();
+            ++i;
+            done = i == ships.length;
+
+            board.printShips();
         } while (!done);
     }
 
+    /**
+     * Reads player input to shot on the opponent board.
+     * 
+     * @param coords coordinates of the strike
+     * @return Status of the hit
+     */
     public Hit sendHit(int[] coords) {
+        boolean done;
         Hit hit = null;
-        InputHelper.CoordInput hitInput;
+
         do {
             System.out.println("où frapper?");
-            hitInput = InputHelper.readCoordInput();
-            hit = opponentBoard.sendHit(hitInput.x, hitInput.y);
-        } while (hit == null);
+            InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
+            coords[0] = hitInput.x;
+            coords[1] = hitInput.y;
 
-        // TODO : Game expects sendHit to return BOTH hit result & hit coords.
-        // return hit is obvious. But how to return coords at the same time ?
-        coords[0] = hitInput.x;
-        coords[1] = hitInput.y;
+            if (coords[0] < 0 || coords[0] >= board.getSize() || coords[1] < 0 || coords[1] >= board.getSize()) {
+                System.out.println("Illegal shot. Try again.");
+                done = false; // if the player shoots outside the boundaries of the board
+            } else if (board.strikes[coords[0]][coords[1]] != null) {
+                System.out.println("You already shot there! Shot elsewhere!");
+                done = false; // if the player already shot here
+            } else {
+                System.out.println("Fire!");
+                done = true;
+            }
+        } while (!done);
+
+        hit = opponentBoard.sendHit(coords[0], coords[1]); // send strike to opponent board
+        board.setHit(hit != Hit.MISS, coords[0], coords[1]); // set the strike on the player board (hit or miss)
         return hit;
     }
 
